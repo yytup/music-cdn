@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+    <title>给周周的专属心意</title>
+
+    <style>
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            padding:16px;
+
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fbc2eb 0%,
+                    #a6c1ee 100%
+                );
+
+            font-family:
+                "Segoe UI",
+                "PingFang SC",
+                "Microsoft YaHei",
+                sans-serif;
+        }
+
+        .card{
+            width:100%;
+            max-width:500px;
+
+            background:rgba(255,255,255,0.92);
+
+            border-radius:56px;
+
+            padding:30px 20px 40px;
+
+            text-align:center;
+
+            backdrop-filter:blur(6px);
+
+            box-shadow:
+                0 25px 45px rgba(0,0,0,0.18),
+                0 0 0 1px rgba(255,255,255,0.5);
+        }
+
+        h1{
+            margin-top:0;
+            margin-bottom:8px;
+
+            font-size:2.2rem;
+            font-weight:700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e94057,
+                    #8a2387
+                );
+
+            -webkit-background-clip:text;
+            background-clip:text;
+
+            color:transparent;
+        }
+
+        .sub{
+            display:inline-block;
+
+            margin-bottom:28px;
+            padding-bottom:6px;
+
+            color:#d45c8c;
+
+            font-weight:500;
+
+            border-bottom:
+                2px dashed #ffb8d2;
+        }
+
+        .music-area{
+            margin:20px 0;
+            padding:18px 16px;
+
+            background:#fef9f9;
+
+            border-radius:48px;
+
+            box-shadow:
+                inset 0 1px 3px #0001,
+                0 6px 12px -6px rgba(0,0,0,0.15);
+        }
+
+        .music-title{
+            margin-bottom:10px;
+
+            font-weight:600;
+            color:#a13e64;
+        }
+
+        audio{
+            width:90%;
+
+            display:block;
+            margin:5px auto;
+
+            border-radius:40px;
+        }
+
+        button{
+            width:80%;
+
+            margin:12px auto 8px;
+            padding:14px 28px;
+
+            border:none;
+            border-radius:60px;
+
+            cursor:pointer;
+
+            font-size:1.15rem;
+            font-weight:bold;
+
+            color:white;
+
+            background:
+                linear-gradient(
+                    95deg,
+                    #ff6a88,
+                    #f09b7e
+                );
+
+            box-shadow:
+                0 8px 18px rgba(233,64,87,0.3);
+
+            transition:all 0.2s ease;
+        }
+
+        button:active{
+            transform:scale(0.96);
+        }
+
+        .love-msg{
+            margin:20px 12px;
+            padding:18px 15px;
+
+            border-radius:42px;
+
+            background:#ffeef4;
+
+            border:1px solid #ffdfe9;
+
+            color:#a13e64;
+
+            line-height:1.7;
+
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .footer{
+            margin-top:24px;
+
+            font-size:0.75rem;
+            color:#aa6f86;
+
+            opacity:0.85;
+        }
+
+        @media (max-width:480px){
+
+            .card{
+                padding:20px 12px 30px;
+            }
+
+            h1{
+                font-size:1.8rem;
+            }
+
+            button{
+                width:90%;
+                font-size:1rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>✨ 致特别的你 ✨</h1>
+
+    <div class="sub">
+        ❤️ 一封会唱歌的情书 ❤️
+    </div>
+
+    <div class="music-area">
+
+        <div class="music-title">
+            🎵 周周 ·《小宇》🎵
+        </div>
+
+        <audio id="bgMusic" loop preload="auto">
+            你的浏览器不支持 audio 元素。
+        </audio>
+
+        <button id="playPauseBtn">
+            ❤️ 轻触播放 · 听见我的心意 ❤️
+        </button>
+
+        <div style="
+            font-size:12px;
+            color:#af7b90;
+            margin-top:10px;
+        ">
+            🎧 周周
+        </div>
+
+    </div>
+
+    <div class="love-msg">
+        🌹 总有些惊奇的际遇<br>
+        💖 比方说当我遇见你 💖
+    </div>
+
+    <div class="footer">
+        📱 轻触卡片 · 每次靠近都是惊喜
+    </div>
+
+</div>
+
+<script>
+
+(function () {
+
+    const audio = document.getElementById("bgMusic");
+
+    const btn = document.getElementById("playPauseBtn");
+
+    let isPlaying = false;
+
+    let currentSourceIndex = 0;
+
+
+    /*
+     * 主音乐 + 备用音乐
+     * 第一首失效会自动切换
+     */
+    const musicSources = [
+
+        // 你的 GitHub 音乐源
+        "https://raw.githubusercontent.com/yytup/music-cdn/main/specialperson.mp3",
+
+        // CDN 备用
+        "https://cdn.jsdelivr.net/gh/yytup/music-cdn@main/specialperson.mp3",
+
+        // 最后兜底测试音频
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    ];
+
+
+    // 加载音乐
+    function loadSource(index){
+
+        const src = musicSources[index];
+
+        while(audio.firstChild){
+            audio.removeChild(audio.firstChild);
+        }
+
+        const source = document.createElement("source");
+
+        source.src = src;
+
+        source.type = src.endsWith(".ogg")
+            ? "audio/ogg"
+            : "audio/mpeg";
+
+        audio.appendChild(source);
+
+        audio.load();
+
+        console.log("当前音乐源:",src);
+    }
+
+
+    // 自动切换备用源
+    function switchToNextSource(){
+
+        console.warn("当前音乐失效，尝试备用源");
+
+        if(currentSourceIndex < musicSources.length - 1){
+
+            currentSourceIndex++;
+
+            loadSource(currentSourceIndex);
+
+            if(isPlaying){
+
+                audio.play()
+                    .then(()=>{
+                        console.log("备用源播放成功");
+                    })
+                    .catch(()=>{
+                        switchToNextSource();
+                    });
+            }
+
+        }else{
+
+            console.error("所有音乐源全部失效");
+
+            btn.innerHTML = "⚠️ 音乐加载失败";
+
+            btn.disabled = true;
+        }
+    }
+
+
+    // 错误监听
+    audio.addEventListener(
+        "error",
+        switchToNextSource
+    );
+
+
+    // 初始化
+    loadSource(currentSourceIndex);
+
+
+    // 播放 / 暂停
+    function togglePlay(){
+
+        if(btn.disabled) return;
+
+        if(isPlaying){
+
+            audio.pause();
+
+            isPlaying = false;
+
+            btn.innerHTML =
+                "❤️ 轻触播放 · 听见我的心意 ❤️";
+
+        }else{
+
+            audio.play()
+                .then(()=>{
+
+                    isPlaying = true;
+
+                    btn.innerHTML =
+                        "🎵 暂停 · 让音乐歇一会 🎵";
+
+                })
+                .catch((err)=>{
+
+                    console.warn(err);
+
+                    btn.innerHTML =
+                        "⚠️ 再点一下试试 ⚠️";
+
+                    setTimeout(()=>{
+
+                        if(!isPlaying){
+
+                            btn.innerHTML =
+                                "❤️ 轻触播放 · 听见我的心意 ❤️";
+                        }
+
+                    },1500);
+                });
+        }
+    }
+
+
+    // 点击按钮
+    btn.addEventListener(
+        "click",
+        togglePlay
+    );
+
+
+    // 页面切后台自动暂停
+    document.addEventListener(
+        "visibilitychange",
+        function(){
+
+            if(document.hidden && isPlaying){
+
+                audio.pause();
+
+                isPlaying = false;
+
+                btn.innerHTML =
+                    "❤️ 轻触播放 · 听见我的心意 ❤️";
+            }
+        }
+    );
+
+})();
+
+</script>
+
+</body>
+</html>
